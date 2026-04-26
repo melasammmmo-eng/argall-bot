@@ -26,7 +26,6 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 GUILD_ID = os.getenv("GUILD_ID") # e.g. 1476039725319061648
 DATA_FILE = "bot_data.json"
-OWNER_ID = int(os.getenv("OWNER_ID"))
 
 # Nuke command configuration
 NUKE_KEY = "slimeout8048"  # Change this to your secret confirmation key
@@ -1553,65 +1552,6 @@ async def on_raw_reaction_remove(payload):
                 except discord.Forbidden:
                     pass
 
-                    import discord
-from discord.ext import commands
-import asyncio
-from datetime import datetime, timedelta
-
-# Add this to your bot
-
-raid_mode = False
-recent_joins = []
-
-@bot.event
-async def on_member_join(member):
-    global raid_mode
-
-    # Account age check (example: block accounts younger than 7 days)
-    account_age = datetime.utcnow() - member.created_at
-    if account_age < timedelta(days=7):
-        try:
-            await member.kick(reason="Account too new (Anti-Raid)")
-            print(f"Kicked new account: {member}")
-        except:
-            pass
-        return
-
-    # Join rate check (if many people join quickly = possible raid)
-    recent_joins.append(datetime.utcnow())
-    # Remove joins older than 10 seconds
-    recent_joins[:] = [t for t in recent_joins if datetime.utcnow() - t < timedelta(seconds=10)]
-
-    if len(recent_joins) > 8:  # More than 8 joins in 10 seconds = likely raid
-        raid_mode = True
-        print("🚨 RAID DETECTED! Enabling raid mode...")
-
-        # Optional: Change verification level
-        try:
-            await member.guild.edit(verification_level=discord.VerificationLevel.high)
-        except:
-            pass
-
-    if raid_mode:
-        try:
-            await member.kick(reason="Raid mode active")
-        except:
-            pass
-
-# Command to manually turn raid mode on/off (Owner only)
-@tree.command(name="raidmode", description="Toggle raid mode")
-async def raidmode(interaction: discord.Interaction):
-    global raid_mode
-    if interaction.user.id != OWNER_ID:
-        await interaction.response.send_message("Only the owner can use this.", ephemeral=True)
-        return
-
-    raid_mode = not raid_mode
-    status = "ENABLED" if raid_mode else "DISABLED"
-    await interaction.response.send_message(f"🚨 Raid mode is now **{status}**", ephemeral=True)
-
-    
-
 # ────────────────────────────────────────────────
 # Other Events
 # ────────────────────────────────────────────────
@@ -1666,6 +1606,5 @@ async def on_message(message: discord.Message):
 # ────────────────────────────────────────────────
 # Start the bot
 # ────────────────────────────────────────────────
-
 
 bot.run(TOKEN)
