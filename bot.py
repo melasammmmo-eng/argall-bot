@@ -390,6 +390,10 @@ async def set_ban_log(interaction: discord.Interaction, channel: discord.TextCha
     save_data(bot_data)
     await interaction.response.send_message(f"Ban logs will now go to {channel.mention}", ephemeral=True)
 
+@tree.command(name="thedus", description="sends the best thedus edit")
+async def thedus(interaction: discord.Interaction):
+    await interaction.response.send_message(ephemeral=True, content="your edit could be next: https://youtube.com/shorts/KAn5p93ZWm8?si=q7d5J0stw4yScigT")
+
 @tree.command(name="set_warn_log", description="Set channel for warn logs")
 @app_commands.default_permissions(administrator=True)
 async def set_warn_log(interaction: discord.Interaction, channel: discord.TextChannel):
